@@ -5,6 +5,7 @@ import {
   Banknote,
 } from "lucide-react";
 
+import { TopUpForm } from "@/components/wallet/topup-form";
 import { WithdrawForm } from "@/components/wallet/withdraw-form";
 import { getWallet, getWalletTransactions } from "@/lib/queries";
 import { formatDate, formatPeso } from "@/lib/format";
@@ -61,7 +62,8 @@ export default async function WalletPage() {
         </div>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 space-y-2">
+        <TopUpForm />
         <WithdrawForm availableBalance={available} />
       </div>
 
