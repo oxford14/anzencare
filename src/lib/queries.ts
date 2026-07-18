@@ -1,20 +1,26 @@
+import { cache } from "react";
+
 import { createClient } from "@/lib/supabase/server";
 
-export async function getSessionUser() {
-  const supabase = await createClient();
+/**
+ * Cached per request so multiple queries in one render share a single
+ * Supabase client and a single `auth.getUser()` network round-trip.
+ */
+const getSupabase = cache(async () => createClient());
+
+export const getSessionUser = cache(async () => {
+  const supabase = await getSupabase();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
-}
+});
 
 export async function getProfile() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   if (!user) return null;
 
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("profiles")
     .select("*")
@@ -24,12 +30,10 @@ export async function getProfile() {
 }
 
 export async function getWallet() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
   if (!user) return null;
 
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("wallets")
     .select("*")
@@ -39,7 +43,7 @@ export async function getWallet() {
 }
 
 export async function getWalletTransactions(limit = 25) {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("wallet_transactions")
     .select("*")
@@ -49,7 +53,7 @@ export async function getWalletTransactions(limit = 25) {
 }
 
 export async function getActiveMembership() {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("memberships")
     .select("*, product:insurance_products(*)")
@@ -61,7 +65,7 @@ export async function getActiveMembership() {
 }
 
 export async function getMemberships() {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("memberships")
     .select("*, product:insurance_products(*)")
@@ -70,7 +74,7 @@ export async function getMemberships() {
 }
 
 export async function getInsuranceProducts() {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("insurance_products")
     .select("*")
@@ -79,7 +83,7 @@ export async function getInsuranceProducts() {
 }
 
 export async function getVirtualIds() {
-  const supabase = await createClient();
+  const supabase = await getSupabase();
   const { data } = await supabase
     .from("virtual_ids")
     .select("*, membership:memberships(*, product:insurance_products(*))")
