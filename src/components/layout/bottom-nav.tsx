@@ -3,21 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  CreditCard,
-  Home,
+  IdCard,
+  LayoutGrid,
+  ShieldCheck,
   UserRound,
-  Users,
   Wallet,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/card", label: "Card", icon: CreditCard },
-  { href: "/referrals", label: "Refer", icon: Users },
+  { href: "/dashboard", label: "Home", icon: LayoutGrid },
   { href: "/wallet", label: "Wallet", icon: Wallet },
-  { href: "/profile", label: "Profile", icon: UserRound },
+  { href: "/insurances", label: "Insure", icon: ShieldCheck },
+  { href: "/virtual-ids", label: "Virtual ID", icon: IdCard },
+  { href: "/account", label: "Account", icon: UserRound },
 ] as const;
 
 export function BottomNav() {

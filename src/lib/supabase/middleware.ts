@@ -3,11 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const protectedPrefixes = [
   "/dashboard",
-  "/card",
-  "/referrals",
   "/wallet",
-  "/profile",
-  "/claims",
+  "/insurances",
+  "/virtual-ids",
+  "/account",
 ];
 
 const authRoutes = ["/login", "/register", "/forgot-password"];

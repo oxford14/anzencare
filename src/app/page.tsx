@@ -168,7 +168,7 @@ export default function LandingPage() {
               </div>
               <div className="animate-bob absolute -right-2 bottom-16 rounded-2xl border border-white/60 bg-white/90 px-4 py-3 shadow-[0_12px_32px_-12px_rgba(198,40,40,0.35)] backdrop-blur-sm [animation-delay:1.2s] sm:-right-6">
                 <p className="text-[10px] font-semibold tracking-wide text-[#6b7a98] uppercase">
-                  Membership
+                  Subscription
                 </p>
                 <p className="font-display text-lg font-semibold text-[#c62828]">
                   ₱500 / 6 mos
@@ -184,7 +184,7 @@ export default function LandingPage() {
         <Reveal variant="up">
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px overflow-hidden rounded-3xl border border-[#1e4a9e]/10 bg-[#1e4a9e]/10 shadow-[0_20px_50px_-25px_rgba(30,74,158,0.35)] sm:grid-cols-4">
             {[
-              { icon: Banknote, value: "₱500", label: "One-time membership" },
+              { icon: Banknote, value: "₱500", label: "One-time subscription" },
               { icon: ShieldCheck, value: "₱100,000", label: "Max cash assistance" },
               { icon: Clock3, value: "6 months", label: "Coverage period" },
               { icon: Users, value: "5 levels", label: "Referral earnings" },
@@ -229,7 +229,7 @@ export default function LandingPage() {
                 Your proof of protection, always in your pocket.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-[#3a4a6b]">
-                The moment your membership activates, your card is ready — no
+                The moment your subscription activates, your card is ready — no
                 plastic, no waiting, no lost cards.
               </p>
             </Reveal>
@@ -342,7 +342,7 @@ export default function LandingPage() {
               </h2>
               <p className="mt-4 text-base leading-relaxed text-[#3a4a6b]">
                 Every activated plan pays commissions across 5 levels of your
-                network — and again on every renewal.
+                connections — and again on every renewal.
               </p>
             </Reveal>
 

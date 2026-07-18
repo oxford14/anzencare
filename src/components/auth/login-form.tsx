@@ -3,22 +3,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  createClient,
-  isSupabaseConfigured,
-} from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/dashboard";
 
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
@@ -26,9 +23,9 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("anzencare_remember_email");
+    const saved = localStorage.getItem("anzencare_remember_identifier");
     if (saved) {
-      setEmail(saved);
+      setIdentifier(saved);
       setRemember(true);
     }
   }, []);
@@ -37,14 +34,14 @@ export function LoginForm() {
     e.preventDefault();
     setError(null);
 
-    if (!email.trim() || !password) {
-      setError("Please enter your email and password.");
+    if (!identifier.trim() || !password) {
+      setError("Please enter your phone or email and password.");
       return;
     }
 
     if (!isSupabaseConfigured()) {
       setError(
-        "Supabase is not configured. Copy .env.local.example to .env.local and add your project keys."
+        "Supabase is not configured. Add your project keys to .env.local."
       );
       return;
     }
@@ -52,25 +49,41 @@ export function LoginForm() {
     setLoading(true);
     try {
       const supabase = createClient();
+
+      // Resolve phone-or-email to the deterministic auth email.
+      const { data: authEmail, error: resolveError } = await supabase.rpc(
+        "resolve_auth_email",
+        { identifier: identifier.trim() }
+      );
+
+      if (resolveError) {
+        setError(resolveError.message);
+        return;
+      }
+
+      if (!authEmail) {
+        setError("No account found with that phone or email.");
+        return;
+      }
+
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: authEmail,
         password,
       });
 
       if (signInError) {
         setError(
           signInError.message === "Invalid login credentials"
-            ? "Invalid email or password. Please try again."
+            ? "Incorrect password. Please try again."
             : signInError.message
         );
         return;
       }
 
-      // Persist preference locally (session handled by Supabase cookies)
       if (remember) {
-        localStorage.setItem("anzencare_remember_email", email.trim());
+        localStorage.setItem("anzencare_remember_identifier", identifier.trim());
       } else {
-        localStorage.removeItem("anzencare_remember_email");
+        localStorage.removeItem("anzencare_remember_identifier");
       }
 
       router.push(redirectTo);
@@ -85,15 +98,22 @@ export function LoginForm() {
   }
 
   return (
-    <div className="relative flex min-h-full flex-col overflow-y-auto">
+    <div className="no-scrollbar relative flex min-h-full flex-col overflow-y-auto">
       {/* Atmospheric background */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,_#2a9d8f55_0%,_transparent_50%),radial-gradient(ellipse_at_90%_10%,_#1a6b6355_0%,_transparent_45%),linear-gradient(180deg,_#0b3d3a_0%,_#114f4a_38%,_#f4faf9_38%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,_#2a5bb855_0%,_transparent_50%),radial-gradient(ellipse_at_90%_10%,_#1e4a9e55_0%,_transparent_45%),linear-gradient(180deg,_#14264f_0%,_#1e4a9e_38%,_#f7f9fc_38%)]" />
       <div className="animate-glow-pulse pointer-events-none absolute -left-16 top-24 size-48 rounded-full bg-brand-glow/30 blur-3xl" />
       <div className="animate-glow-pulse pointer-events-none absolute -right-10 top-10 size-40 rounded-full bg-brand-mid/40 blur-3xl [animation-delay:1.5s]" />
 
-      <div className="relative z-10 flex flex-1 flex-col px-6 pb-8 pt-[max(2.5rem,env(safe-area-inset-top))]">
+      <div className="relative z-10 flex flex-1 flex-col px-6 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))]">
+        <Link
+          href="/"
+          className="inline-flex w-fit items-center gap-1 rounded-full bg-white/15 py-1.5 pr-3 pl-2 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur-sm transition-colors hover:bg-white/25"
+        >
+          <ChevronLeft className="size-4" />
+          Home
+        </Link>
         {/* Brand hero */}
-        <header className="animate-brand-fade mb-8 pt-6 text-center text-primary-foreground">
+        <header className="animate-brand-fade mb-8 pt-4 text-center text-primary-foreground">
           <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 backdrop-blur-sm">
             <ShieldCheck className="size-8 text-white" strokeWidth={1.75} />
           </div>
@@ -116,7 +136,7 @@ export function LoginForm() {
               Sign in
             </h2>
             <p className="text-sm text-muted-foreground">
-              Access your coverage, wallet, and referrals.
+              Access your coverage, wallet, and insurances.
             </p>
           </div>
 
@@ -131,17 +151,16 @@ export function LoginForm() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="identifier">Phone or email</Label>
               <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                inputMode="email"
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="identifier"
+                type="text"
+                autoComplete="username"
+                placeholder="09XX XXX XXXX or you@email.com"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="h-11 rounded-xl bg-card"
-                aria-invalid={Boolean(error && !email.trim())}
+                aria-invalid={Boolean(error && !identifier.trim())}
               />
             </div>
 
