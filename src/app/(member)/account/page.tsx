@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BadgeCheck, ShieldAlert } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronRight,
+  Lock,
+  ShieldAlert,
+  ShieldCheck,
+  UserRound,
+  Users,
+} from "lucide-react";
 
-import { AccountForm } from "@/components/account/account-form";
+import { SignOutButton } from "@/components/account/sign-out-button";
 import { getMemberships, getProfile, getSessionUser } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -63,17 +72,82 @@ export default async function AccountPage() {
         </div>
       </div>
 
+      <Link
+        href="/connect"
+        className="mt-4 flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors active:bg-muted"
+      >
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-mid">
+          <Users className="size-5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-foreground">Connect</p>
+          <p className="text-xs text-muted-foreground">
+            Invite others and earn referral commissions.
+          </p>
+        </div>
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+      </Link>
+
+      {profile?.role === "super_admin" && (
+        <Link
+          href="/super-admin/dashboard"
+          className="mt-3 flex items-center gap-3 rounded-2xl border border-brand-mid/30 bg-brand-soft/60 p-4 transition-colors active:bg-brand-soft"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-mid text-white">
+            <ShieldCheck className="size-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-brand-deep">
+              Super Admin Console
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Members, withdrawals, commissions, and more.
+            </p>
+          </div>
+          <ChevronRight className="size-4 shrink-0 text-brand-mid" />
+        </Link>
+      )}
+
+      <div className="mt-5 space-y-3">
+        <Link
+          href="/account/profile"
+          className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors active:bg-muted"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-mid">
+            <UserRound className="size-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground">
+              Personal information
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Update your name and contact email.
+            </p>
+          </div>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+        </Link>
+
+        <Link
+          href="/account/security"
+          className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors active:bg-muted"
+        >
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-mid">
+            <Lock className="size-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-foreground">
+              Password &amp; security
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Change the password you use to sign in.
+            </p>
+          </div>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+        </Link>
+      </div>
+
       <div className="mt-5">
-        <AccountForm
-          userId={user.id}
-          initial={{
-            first_name: profile?.first_name ?? "",
-            middle_name: profile?.middle_name ?? null,
-            last_name: profile?.last_name ?? "",
-            email: profile?.email ?? null,
-            phone: profile?.phone ?? null,
-          }}
-        />
+        <SignOutButton />
       </div>
     </div>
   );

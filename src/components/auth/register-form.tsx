@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
 
 export function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -25,9 +26,17 @@ export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      setReferralCode(ref.trim().toUpperCase());
+    }
+  }, [searchParams]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,6 +86,7 @@ export function RegisterForm() {
             last_name: lastName.trim(),
             phone: normalizedPhone,
             email: realEmail,
+            referral_code: referralCode.trim().toUpperCase() || null,
           },
         },
       });
@@ -229,6 +239,24 @@ export function RegisterForm() {
               onChange={(e) => setEmail(e.target.value)}
               className="h-11 rounded-xl"
               autoComplete="email"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="referralCode">
+              Referral code{" "}
+              <span className="font-normal text-muted-foreground">
+                (optional)
+              </span>
+            </Label>
+            <Input
+              id="referralCode"
+              placeholder="Enter your inviter's code"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+              className="h-11 rounded-xl uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal"
+              autoCapitalize="characters"
+              autoComplete="off"
             />
           </div>
 

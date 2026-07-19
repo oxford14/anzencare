@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { ShieldCheck } from "lucide-react";
 
@@ -17,8 +18,25 @@ const statusStyles: Record<string, string> = {
   suspended: "bg-amber-100 text-amber-700",
 };
 
-async function makeQr(token: string): Promise<string> {
-  return QRCode.toDataURL(`https://anzencare.ph/verify/${token}`, {
+/**
+ * Resolve the public origin the QR should point at. Prefer the configured
+ * site URL; otherwise fall back to the current request host so scans reach a
+ * live server instead of a hardcoded (possibly offline) domain.
+ */
+async function getBaseUrl(): Promise<string> {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "");
+  if (configured) return configured;
+
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (!host) return "";
+  const proto =
+    h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
+async function makeQr(token: string, baseUrl: string): Promise<string> {
+  return QRCode.toDataURL(`${baseUrl}/verify/${token}`, {
     margin: 1,
     width: 240,
     color: { dark: "#14264f", light: "#ffffff" },
@@ -26,9 +44,10 @@ async function makeQr(token: string): Promise<string> {
 }
 
 export default async function VirtualIdsPage() {
-  const [profile, virtualIds] = await Promise.all([
+  const [profile, virtualIds, baseUrl] = await Promise.all([
     getProfile(),
     getVirtualIds(),
+    getBaseUrl(),
   ]);
 
   const fullName = [profile?.first_name, profile?.last_name]
@@ -39,7 +58,7 @@ export default async function VirtualIdsPage() {
   const cards = await Promise.all(
     virtualIds.map(async (v) => ({
       ...v,
-      qrDataUrl: await makeQr(v.qr_token),
+      qrDataUrl: await makeQr(v.qr_token, baseUrl),
     }))
   );
 
@@ -112,6 +131,12 @@ export default async function VirtualIdsPage() {
                     <p className="font-mono text-sm font-semibold tracking-wider">
                       {card.member_id}
                     </p>
+                    <p className="mt-2 text-[10px] uppercase tracking-wide text-white/60">
+                      Valid until
+                    </p>
+                    <p className="text-sm font-semibold">
+                      {formatDate(card.expiry_date)}
+                    </p>
                   </div>
                   <div className="shrink-0 rounded-xl bg-white p-2">
                     <Image
@@ -127,7 +152,7 @@ export default async function VirtualIdsPage() {
 
                 <div className="mt-5 flex items-center justify-between border-t border-white/15 pt-3 text-xs text-white/75">
                   <span>Issued {formatDate(card.issued_at)}</span>
-                  <span>Expires {formatDate(card.expiry_date)}</span>
+                  <span>1-year coverage</span>
                 </div>
               </article>
             );

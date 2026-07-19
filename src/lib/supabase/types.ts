@@ -91,6 +91,146 @@ export type Database = {
         }
         Relationships: []
       }
+      insurance_applications: {
+        Row: {
+          address_line: string | null
+          amount: number | null
+          barangay: string | null
+          beneficiary_date_of_birth: string | null
+          beneficiary_full_name: string | null
+          beneficiary_mobile: string | null
+          beneficiary_relationship: string | null
+          city: string | null
+          civil_status: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          first_name: string
+          gov_id_number: string | null
+          gov_id_path: string | null
+          gov_id_type: string | null
+          id: string
+          last_name: string
+          membership_id: string | null
+          middle_name: string | null
+          mobile: string | null
+          nationality: string | null
+          occupation: string | null
+          postal_code: string | null
+          product_id: string | null
+          province: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selfie_path: string | null
+          sex: string | null
+          status: string
+          user_id: string
+          wallet_transaction_id: string | null
+        }
+        Insert: {
+          address_line?: string | null
+          amount?: number | null
+          barangay?: string | null
+          beneficiary_date_of_birth?: string | null
+          beneficiary_full_name?: string | null
+          beneficiary_mobile?: string | null
+          beneficiary_relationship?: string | null
+          city?: string | null
+          civil_status?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name: string
+          gov_id_number?: string | null
+          gov_id_path?: string | null
+          gov_id_type?: string | null
+          id?: string
+          last_name: string
+          membership_id?: string | null
+          middle_name?: string | null
+          mobile?: string | null
+          nationality?: string | null
+          occupation?: string | null
+          postal_code?: string | null
+          product_id?: string | null
+          province?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_path?: string | null
+          sex?: string | null
+          status?: string
+          user_id: string
+          wallet_transaction_id?: string | null
+        }
+        Update: {
+          address_line?: string | null
+          amount?: number | null
+          barangay?: string | null
+          beneficiary_date_of_birth?: string | null
+          beneficiary_full_name?: string | null
+          beneficiary_mobile?: string | null
+          beneficiary_relationship?: string | null
+          city?: string | null
+          civil_status?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          first_name?: string
+          gov_id_number?: string | null
+          gov_id_path?: string | null
+          gov_id_type?: string | null
+          id?: string
+          last_name?: string
+          membership_id?: string | null
+          middle_name?: string | null
+          mobile?: string | null
+          nationality?: string | null
+          occupation?: string | null
+          postal_code?: string | null
+          product_id?: string | null
+          province?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_path?: string | null
+          sex?: string | null
+          status?: string
+          user_id?: string
+          wallet_transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_applications_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_applications_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_applications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_applications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kyc_documents: {
         Row: {
           created_at: string
@@ -173,6 +313,9 @@ export type Database = {
           last_name: string
           middle_name: string | null
           phone: string | null
+          referral_code: string | null
+          referred_by: string | null
+          role: string
           updated_at: string
         }
         Insert: {
@@ -183,6 +326,9 @@ export type Database = {
           last_name?: string
           middle_name?: string | null
           phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          role?: string
           updated_at?: string
         }
         Update: {
@@ -193,7 +339,88 @@ export type Database = {
           last_name?: string
           middle_name?: string | null
           phone?: string | null
+          referral_code?: string | null
+          referred_by?: string | null
+          role?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_commissions: {
+        Row: {
+          amount: number
+          created_at: string
+          earner_id: string
+          id: string
+          level: number
+          membership_id: string | null
+          source_user_id: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          earner_id: string
+          id?: string
+          level: number
+          membership_id?: string | null
+          source_user_id: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          earner_id?: string
+          id?: string
+          level?: number
+          membership_id?: string | null
+          source_user_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_commissions_earner_id_fkey"
+            columns: ["earner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_commissions_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_commissions_source_user_id_fkey"
+            columns: ["source_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_levels: {
+        Row: {
+          amount: number
+          level: number
+        }
+        Insert: {
+          amount: number
+          level: number
+        }
+        Update: {
+          amount?: number
+          level?: number
         }
         Relationships: []
       }
@@ -301,6 +528,123 @@ export type Database = {
         }
         Relationships: []
       }
+      deposits: {
+        Row: {
+          amount: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          paid_at: string | null
+          paymongo_intent_id: string | null
+          qr_image_url: string | null
+          status: string
+          user_id: string
+          wallet_transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          paymongo_intent_id?: string | null
+          qr_image_url?: string | null
+          status?: string
+          user_id: string
+          wallet_transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          paid_at?: string | null
+          paymongo_intent_id?: string | null
+          qr_image_url?: string | null
+          status?: string
+          user_id?: string
+          wallet_transaction_id?: string | null
+        }
+        Relationships: []
+      }
+      withdrawal_accounts: {
+        Row: {
+          account_name: string
+          account_number: string
+          account_type: string
+          bank_name: string | null
+          created_at: string
+          id: string
+          label: string
+          user_id: string
+        }
+        Insert: {
+          account_name: string
+          account_number: string
+          account_type: string
+          bank_name?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_number?: string
+          account_type?: string
+          bank_name?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      withdrawal_requests: {
+        Row: {
+          account_snapshot: Json | null
+          amount: number
+          created_at: string
+          id: string
+          paymongo_status: string | null
+          paymongo_transfer_id: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+          wallet_transaction_id: string | null
+        }
+        Insert: {
+          account_snapshot?: Json | null
+          amount: number
+          created_at?: string
+          id?: string
+          paymongo_status?: string | null
+          paymongo_transfer_id?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+          wallet_transaction_id?: string | null
+        }
+        Update: {
+          account_snapshot?: Json | null
+          amount?: number
+          created_at?: string
+          id?: string
+          paymongo_status?: string | null
+          paymongo_transfer_id?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+          wallet_transaction_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -316,8 +660,72 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_approve_application: {
+        Args: { p_application_id: string }
+        Returns: Json
+      }
+      admin_adjust_wallet: {
+        Args: { p_user_id: string; p_amount: number; p_reason?: string }
+        Returns: number
+      }
+      admin_approve_withdrawal: { Args: { p_request_id: string }; Returns: undefined }
+      admin_set_super_admin: {
+        Args: { p_user_id: string; p_make: boolean }
+        Returns: undefined
+      }
+      admin_mark_withdrawal_paid: {
+        Args: { p_request_id: string; p_ref?: string }
+        Returns: undefined
+      }
+      admin_reject_application: {
+        Args: { p_application_id: string; p_notes?: string }
+        Returns: undefined
+      }
+      admin_reject_withdrawal: {
+        Args: { p_request_id: string; p_notes?: string }
+        Returns: undefined
+      }
+      is_super_admin: { Args: Record<PropertyKey, never>; Returns: boolean }
+      request_withdrawal: {
+        Args: { p_amount: number; p_account_id: string }
+        Returns: string
+      }
+      system_fulfill_deposit: {
+        Args: { p_intent_id: string }
+        Returns: boolean
+      }
+      system_resolve_withdrawal_transfer: {
+        Args: { p_transfer_id: string; p_status: string; p_reason?: string }
+        Returns: undefined
+      }
+      distribute_referral_commissions: {
+        Args: { p_membership_id: string; p_source_user: string }
+        Returns: undefined
+      }
+      generate_referral_code: { Args: Record<PropertyKey, never>; Returns: string }
       normalize_ph_phone: { Args: { p_input: string }; Returns: string }
       resolve_auth_email: { Args: { identifier: string }; Returns: string }
+      submit_insurance_application: {
+        Args: {
+          p_product_id: string
+          p_gov_id_path: string
+          p_selfie_path: string
+          p_payload: Json
+        }
+        Returns: string
+      }
+      verify_virtual_id: {
+        Args: { p_token: string }
+        Returns: {
+          member_id: string
+          full_name: string | null
+          status: string
+          product_name: string | null
+          issued_at: string
+          expiry_date: string | null
+          is_valid: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

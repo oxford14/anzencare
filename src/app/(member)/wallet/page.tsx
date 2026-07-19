@@ -7,7 +7,11 @@ import {
 
 import { TopUpForm } from "@/components/wallet/topup-form";
 import { WithdrawForm } from "@/components/wallet/withdraw-form";
-import { getWallet, getWalletTransactions } from "@/lib/queries";
+import {
+  getWallet,
+  getWalletTransactions,
+  getWithdrawalAccounts,
+} from "@/lib/queries";
 import { formatDate, formatPeso } from "@/lib/format";
 
 export const metadata: Metadata = {
@@ -18,13 +22,16 @@ const statusStyles: Record<string, string> = {
   completed: "bg-brand-soft text-brand-deep",
   pending: "bg-amber-100 text-amber-700",
   processing: "bg-blue-100 text-blue-700",
+  approved: "bg-blue-100 text-blue-700",
+  paid: "bg-emerald-100 text-emerald-700",
   rejected: "bg-red-100 text-red-700",
 };
 
 export default async function WalletPage() {
-  const [wallet, transactions] = await Promise.all([
+  const [wallet, transactions, accounts] = await Promise.all([
     getWallet(),
     getWalletTransactions(),
+    getWithdrawalAccounts(),
   ]);
 
   const available = Number(wallet?.available_balance ?? 0);
@@ -64,7 +71,7 @@ export default async function WalletPage() {
 
       <div className="mt-5 space-y-2">
         <TopUpForm />
-        <WithdrawForm availableBalance={available} />
+        <WithdrawForm availableBalance={available} accounts={accounts} />
       </div>
 
       <section className="mt-7">
@@ -78,7 +85,10 @@ export default async function WalletPage() {
         ) : (
           <ul className="space-y-2">
             {transactions.map((tx) => {
-              const isCredit = tx.type === "credit";
+              const isCredit =
+                tx.type === "credit" ||
+                tx.type === "refund" ||
+                tx.type === "commission";
               return (
                 <li
                   key={tx.id}

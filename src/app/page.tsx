@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "AnzenCare — Affordable Protection, Delivered Digitally",
   description:
-    "Accident cash assistance up to ₱100,000 for ₱500 over 6 months. Join AnzenCare — because we care.",
+    "Accident cash assistance up to ₱100,000 for ₱500 for one year. Join AnzenCare — because we care.",
 };
 
 export default function LandingPage() {
@@ -96,7 +96,7 @@ export default function LandingPage() {
                 <strong className="font-semibold text-[#14264f]">
                   ₱100,000
                 </strong>{" "}
-                — for just ₱500 over 6 months. Register, pay, and get your
+                — for just ₱500 for one year. Register, pay, and get your
                 digital insurance card in minutes.
               </p>
             </Reveal>
@@ -186,7 +186,7 @@ export default function LandingPage() {
             {[
               { icon: Banknote, value: "₱500", label: "One-time subscription" },
               { icon: ShieldCheck, value: "₱100,000", label: "Max cash assistance" },
-              { icon: Clock3, value: "6 months", label: "Coverage period" },
+              { icon: Clock3, value: "1 year", label: "Coverage period" },
               { icon: Users, value: "5 levels", label: "Referral earnings" },
             ].map(({ icon: Icon, value, label }) => (
               <div
@@ -306,7 +306,7 @@ export default function LandingPage() {
                 step: "03",
                 icon: ShieldCheck,
                 title: "Get covered",
-                body: "Receive your digital card and stay protected for 6 months.",
+                body: "Receive your digital card and stay protected for one year.",
               },
             ].map(({ step, icon: Icon, title, body }, i) => (
               <Reveal key={step} variant="up" delay={i * 130}>
@@ -410,7 +410,7 @@ export default function LandingPage() {
                 Because accidents don&apos;t wait. Neither should protection.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-base text-white/75">
-                Join AnzenCare today — ₱500 for 6 months of accident cash
+                Join AnzenCare today — ₱500 for one year of accident cash
                 assistance up to ₱100,000.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

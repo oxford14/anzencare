@@ -7,6 +7,7 @@ const protectedPrefixes = [
   "/insurances",
   "/virtual-ids",
   "/account",
+  "/connect",
 ];
 
 const authRoutes = ["/login", "/register", "/forgot-password"];
