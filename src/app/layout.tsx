@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 
 import "./globals.css";
+import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 
 const manrope = Manrope({
   variable: "--font-sans",
@@ -51,6 +52,7 @@ export default function RootLayout({
         className={`${manrope.variable} ${fraunces.variable} font-sans antialiased`}
       >
         {children}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

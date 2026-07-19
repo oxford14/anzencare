@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { SignOutButton } from "@/components/account/sign-out-button";
+import { InstallAppCard } from "@/components/pwa/install-app-card";
 import { getMemberships, getProfile, getSessionUser } from "@/lib/queries";
 
 export const metadata: Metadata = {
@@ -72,9 +73,13 @@ export default async function AccountPage() {
         </div>
       </div>
 
+      <div className="mt-4 empty:hidden">
+        <InstallAppCard />
+      </div>
+
       <Link
         href="/connect"
-        className="mt-4 flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors active:bg-muted"
+        className="mt-3 flex items-center gap-3 rounded-2xl border border-border/70 bg-card p-4 transition-colors active:bg-muted"
       >
         <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-mid">
           <Users className="size-5" />
